@@ -1,0 +1,33 @@
+{
+  "name": "Le Liam",
+  "short_name": "leliam",
+  "icons": [{
+    "src": "icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    }, {
+      "src": "icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    }, {
+      "src": "icon-152.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    }, {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }, {
+      "src": "icon-256.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    }, {
+      "src": "icon-1024.png",
+      "sizes": "1024x1024",
+      "type": "image/png"
+    }],
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#209CEE",
+  "theme_color": "#FFFFFF"
+}
