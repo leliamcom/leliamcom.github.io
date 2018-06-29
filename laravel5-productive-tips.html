@@ -101,46 +101,46 @@ mat-chip-list[_ngcontent-sc19]   a[_ngcontent-sc19] {
 <ul>
 <li>Create migration scripts directly from database, at the time I'm writing, the composer default supporting laravel-4. With this settings, we can easily generate migration script with <code>php artisan migrate:generate flights</code></li>
 </ul>
-<pre class="hljs"><code><span class="hljs-string">"require-dev"</span>: {
-    <span class="hljs-string">"fzaninotto/faker"</span>: <span class="hljs-string">"~1.4"</span>,
-    <span class="hljs-string">"mockery/mockery"</span>: <span class="hljs-string">"0.9.*"</span>,
-    <span class="hljs-string">"phpunit/phpunit"</span>: <span class="hljs-string">"~4.0"</span>,
-    <span class="hljs-string">"phpspec/phpspec"</span>: <span class="hljs-string">"~2.1"</span>,
-    <span class="hljs-string">"xethron/migrations-generator"</span>: <span class="hljs-string">"dev-l5"</span>,
-    <span class="hljs-string">"way/generators"</span>: <span class="hljs-string">"dev-feature/laravel-five-stable"</span>
+<pre class="hljs"><code>"require-dev": {
+    "fzaninotto/faker": "~1.4",
+    "mockery/mockery": "0.9.*",
+    "phpunit/phpunit": "~4.0",
+    "phpspec/phpspec": "~2.1",
+    "xethron/migrations-generator": "dev-l5",
+    "way/generators": "dev-feature/laravel-five-stable"
 },
-<span class="hljs-string">"repositories"</span>: [
+"repositories": [
     {
-        <span class="hljs-string">"type"</span>: <span class="hljs-string">"git"</span>,
-        <span class="hljs-string">"url"</span>: <span class="hljs-string">"https://github.com/jamisonvalenta/Laravel-4-Generators.git"</span>
+        "type": "git",
+        "url": "https://github.com/jamisonvalenta/Laravel-4-Generators.git"
     }
 ],
 
-<span class="hljs-comment"># config/app.php</span>
-<span class="hljs-string">'Way\Generators\GeneratorsServiceProvider'</span>,
-<span class="hljs-string">'Xethron\MigrationsGenerator\MigrationsGeneratorServiceProvider'</span>,
+# config/app.php
+'Way\Generators\GeneratorsServiceProvider',
+'Xethron\MigrationsGenerator\MigrationsGeneratorServiceProvider',
 </code></pre>
 <ul>
 <li>Reinstall Form + Html helper, <a href="https://laravelcollective.com/docs/5.1/html">from laravel collective</a></li>
 </ul>
-<pre class="hljs"><code><span class="hljs-comment">#composer.json</span>
-<span class="hljs-string">"require"</span>: {
-    <span class="hljs-string">"laravelcollective/html"</span>: <span class="hljs-string">"5.1.*"</span>
+<pre class="hljs"><code>#composer.json
+"require": {
+    "laravelcollective/html": "5.1.*"
 }
 
-<span class="hljs-comment">#config/app.php</span>
-<span class="hljs-string">'providers'</span> =&gt; [
-  <span class="hljs-comment">// ...</span>
+#config/app.php
+'providers' =&gt; [
+  // ...
   Collective\Html\HtmlServiceProvider::class,
-  <span class="hljs-comment">// ...</span>
+  // ...
 ],
 
-<span class="hljs-comment">#config/app.php</span>
-<span class="hljs-string">'aliases'</span> =&gt; [
-  <span class="hljs-comment">// ...</span>
-    <span class="hljs-string">'Form'</span> =&gt; Collective\Html\FormFacade::class,
-    <span class="hljs-string">'Html'</span> =&gt; Collective\Html\HtmlFacade::class,
-  <span class="hljs-comment">// ...</span>
+#config/app.php
+'aliases' =&gt; [
+  // ...
+    'Form' =&gt; Collective\Html\FormFacade::class,
+    'Html' =&gt; Collective\Html\HtmlFacade::class,
+  // ...
 ],
 </code></pre>
 <ul>
@@ -151,6 +151,6 @@ mat-chip-list[_ngcontent-sc19]   a[_ngcontent-sc19] {
 </li>
 </ul>
 </div><mat-chip-list _ngcontent-sc19="" class="mat-chip-list" style="margin-top: 5px" tabindex="-1" aria-required="false" aria-disabled="false" aria-invalid="false" aria-multiselectable="false" aria-orientation="horizontal" id="mat-chip-list-25"><div class="mat-chip-list-wrapper"><!----><a _ngcontent-sc19="" color="accent" mat-stroked-button="" class="mat-stroked-button mat-accent _mat-animation-noopable ng-star-inserted" tabindex="0" aria-disabled="false" href="/tag/php"><span class="mat-button-wrapper">php</span><div class="mat-button-ripple mat-ripple" matripple=""></div><div class="mat-button-focus-overlay"></div></a></div></mat-chip-list></div></div><div _ngcontent-sc19="" class="container" style="padding-top:20px"><h2 _ngcontent-sc19="">Comments</h2><div _ngcontent-sc19=""></div></div></div></div></app-blogpost></div><!----></app-root>
-<script type="text/javascript" src="runtime.6afe30102d8fe7337431.js"></script><script type="text/javascript" src="polyfills.1024cb7b58fe3e68344f.js"></script><script type="text/javascript" src="main.ac3976b1616b68edcea6.js"></script>
+<script type="text/javascript" src="runtime.6afe30102d8fe7337431.js"></script><script type="text/javascript" src="polyfills.1024cb7b58fe3e68344f.js"></script><script type="text/javascript" src="main.78311afffeb22c9034ef.js"></script>
 
-<div class="cdk-visually-hidden" aria-atomic="true" aria-live="polite"></div><script id="le-liam-state" type="application/json">{&q;blogpost&q;:{&q;author&q;:{&q;avatar&q;:&q;/assets/32x32_avatar.jpg&q;,&q;name&q;:&q;Liam&q;,&q;tagline&q;:&q;Make people great again!&q;},&q;data&q;:&q;\n## Laravel 5\nLaravel currently is the most popular PHP framework.\n\nWith the news that [PHP 7 had been released on December the 3th](https://twitter.com/official_php/status/672511111896432640), I&s;ll expect a spike in usage of laravel usage. PHP 7 is definitely the best tool for developing web application quickly.\n\n## Some Productive tips\n\n- Create migration scripts directly from database, at the time I&s;m writing, the composer default supporting laravel-4. With this settings, we can easily generate migration script with `php artisan migrate:generate flights`\n\n~~~ php\n\&q;require-dev\&q;: {\n    \&q;fzaninotto/faker\&q;: \&q;~1.4\&q;,\n    \&q;mockery/mockery\&q;: \&q;0.9.*\&q;,\n    \&q;phpunit/phpunit\&q;: \&q;~4.0\&q;,\n    \&q;phpspec/phpspec\&q;: \&q;~2.1\&q;,\n    \&q;xethron/migrations-generator\&q;: \&q;dev-l5\&q;,\n    \&q;way/generators\&q;: \&q;dev-feature/laravel-five-stable\&q;\n},\n\&q;repositories\&q;: [\n    {\n        \&q;type\&q;: \&q;git\&q;,\n        \&q;url\&q;: \&q;https://github.com/jamisonvalenta/Laravel-4-Generators.git\&q;\n    }\n],\n\n# config/app.php\n&s;Way\\Generators\\GeneratorsServiceProvider&s;,\n&s;Xethron\\MigrationsGenerator\\MigrationsGeneratorServiceProvider&s;,\n~~~\n\n- Reinstall Form + Html helper, [from laravel collective](https://laravelcollective.com/docs/5.1/html)\n\n~~~  php\n#composer.json\n\&q;require\&q;: {\n    \&q;laravelcollective/html\&q;: \&q;5.1.*\&q;\n}\n\n#config/app.php\n&s;providers&s; =&g; [\n  // ...\n  Collective\\Html\\HtmlServiceProvider::class,\n  // ...\n],\n\n#config/app.php\n&s;aliases&s; =&g; [\n  // ...\n    &s;Form&s; =&g; Collective\\Html\\FormFacade::class,\n    &s;Html&s; =&g; Collective\\Html\\HtmlFacade::class,\n  // ...\n],\n~~~\n\n- Get a good open source IDE: [Atom](https://atom.io/)\n  - no more sublime prompt when saving (ignore if you have never used sublime text)\n    &q;,&q;id&q;:&q;7f240af0-5e80-443c-bb64-7f2f456131a9&q;,&q;bannerUrl&q;:&q;/assets/2015112800.jpg&q;,&q;coverUrl&q;:&q;/assets/2015112800.jpg&q;,&q;postedAt&q;:&q;2015-12-04T16:00:00.000Z&q;,&q;tags&q;:[&q;php&q;],&q;title&q;:&q;Laravel5 Productive Tips&q;,&q;typeCode&q;:1},&q;blogHtml&q;:&q;&l;h2&g;Laravel 5&l;/h2&g;\n&l;p&g;Laravel currently is the most popular PHP framework.&l;/p&g;\n&l;p&g;With the news that &l;a href=\&q;https://twitter.com/official_php/status/672511111896432640\&q;&g;PHP 7 had been released on December the 3th&l;/a&g;, I&s;ll expect a spike in usage of laravel usage. PHP 7 is definitely the best tool for developing web application quickly.&l;/p&g;\n&l;h2&g;Some Productive tips&l;/h2&g;\n&l;ul&g;\n&l;li&g;Create migration scripts directly from database, at the time I&s;m writing, the composer default supporting laravel-4. With this settings, we can easily generate migration script with &l;code&g;php artisan migrate:generate flights&l;/code&g;&l;/li&g;\n&l;/ul&g;\n&l;pre class=\&q;hljs\&q;&g;&l;code&g;&l;span class=\&q;hljs-string\&q;&g;\&q;require-dev\&q;&l;/span&g;: {\n    &l;span class=\&q;hljs-string\&q;&g;\&q;fzaninotto/faker\&q;&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;~1.4\&q;&l;/span&g;,\n    &l;span class=\&q;hljs-string\&q;&g;\&q;mockery/mockery\&q;&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;0.9.*\&q;&l;/span&g;,\n    &l;span class=\&q;hljs-string\&q;&g;\&q;phpunit/phpunit\&q;&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;~4.0\&q;&l;/span&g;,\n    &l;span class=\&q;hljs-string\&q;&g;\&q;phpspec/phpspec\&q;&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;~2.1\&q;&l;/span&g;,\n    &l;span class=\&q;hljs-string\&q;&g;\&q;xethron/migrations-generator\&q;&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;dev-l5\&q;&l;/span&g;,\n    &l;span class=\&q;hljs-string\&q;&g;\&q;way/generators\&q;&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;dev-feature/laravel-five-stable\&q;&l;/span&g;\n},\n&l;span class=\&q;hljs-string\&q;&g;\&q;repositories\&q;&l;/span&g;: [\n    {\n        &l;span class=\&q;hljs-string\&q;&g;\&q;type\&q;&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;git\&q;&l;/span&g;,\n        &l;span class=\&q;hljs-string\&q;&g;\&q;url\&q;&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;https://github.com/jamisonvalenta/Laravel-4-Generators.git\&q;&l;/span&g;\n    }\n],\n\n&l;span class=\&q;hljs-comment\&q;&g;# config/app.php&l;/span&g;\n&l;span class=\&q;hljs-string\&q;&g;&s;Way\\Generators\\GeneratorsServiceProvider&s;&l;/span&g;,\n&l;span class=\&q;hljs-string\&q;&g;&s;Xethron\\MigrationsGenerator\\MigrationsGeneratorServiceProvider&s;&l;/span&g;,\n&l;/code&g;&l;/pre&g;\n&l;ul&g;\n&l;li&g;Reinstall Form + Html helper, &l;a href=\&q;https://laravelcollective.com/docs/5.1/html\&q;&g;from laravel collective&l;/a&g;&l;/li&g;\n&l;/ul&g;\n&l;pre class=\&q;hljs\&q;&g;&l;code&g;&l;span class=\&q;hljs-comment\&q;&g;#composer.json&l;/span&g;\n&l;span class=\&q;hljs-string\&q;&g;\&q;require\&q;&l;/span&g;: {\n    &l;span class=\&q;hljs-string\&q;&g;\&q;laravelcollective/html\&q;&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;5.1.*\&q;&l;/span&g;\n}\n\n&l;span class=\&q;hljs-comment\&q;&g;#config/app.php&l;/span&g;\n&l;span class=\&q;hljs-string\&q;&g;&s;providers&s;&l;/span&g; =&a;gt; [\n  &l;span class=\&q;hljs-comment\&q;&g;// ...&l;/span&g;\n  Collective\\Html\\HtmlServiceProvider::class,\n  &l;span class=\&q;hljs-comment\&q;&g;// ...&l;/span&g;\n],\n\n&l;span class=\&q;hljs-comment\&q;&g;#config/app.php&l;/span&g;\n&l;span class=\&q;hljs-string\&q;&g;&s;aliases&s;&l;/span&g; =&a;gt; [\n  &l;span class=\&q;hljs-comment\&q;&g;// ...&l;/span&g;\n    &l;span class=\&q;hljs-string\&q;&g;&s;Form&s;&l;/span&g; =&a;gt; Collective\\Html\\FormFacade::class,\n    &l;span class=\&q;hljs-string\&q;&g;&s;Html&s;&l;/span&g; =&a;gt; Collective\\Html\\HtmlFacade::class,\n  &l;span class=\&q;hljs-comment\&q;&g;// ...&l;/span&g;\n],\n&l;/code&g;&l;/pre&g;\n&l;ul&g;\n&l;li&g;Get a good open source IDE: &l;a href=\&q;https://atom.io/\&q;&g;Atom&l;/a&g;\n&l;ul&g;\n&l;li&g;no more sublime prompt when saving (ignore if you have never used sublime text)&l;/li&g;\n&l;/ul&g;\n&l;/li&g;\n&l;/ul&g;\n&q;,&q;showType&q;:3,&q;errorMessage&q;:&q;&q;}</script></body></html>
+<div class="cdk-visually-hidden" aria-atomic="true" aria-live="polite"></div><script id="le-liam-state" type="application/json">{&q;blogpost&q;:{&q;author&q;:{&q;avatar&q;:&q;/assets/32x32_avatar.jpg&q;,&q;name&q;:&q;Liam&q;,&q;tagline&q;:&q;Make people great again!&q;},&q;data&q;:&q;\n## Laravel 5\nLaravel currently is the most popular PHP framework.\n\nWith the news that [PHP 7 had been released on December the 3th](https://twitter.com/official_php/status/672511111896432640), I&s;ll expect a spike in usage of laravel usage. PHP 7 is definitely the best tool for developing web application quickly.\n\n## Some Productive tips\n\n- Create migration scripts directly from database, at the time I&s;m writing, the composer default supporting laravel-4. With this settings, we can easily generate migration script with `php artisan migrate:generate flights`\n\n~~~ php\n\&q;require-dev\&q;: {\n    \&q;fzaninotto/faker\&q;: \&q;~1.4\&q;,\n    \&q;mockery/mockery\&q;: \&q;0.9.*\&q;,\n    \&q;phpunit/phpunit\&q;: \&q;~4.0\&q;,\n    \&q;phpspec/phpspec\&q;: \&q;~2.1\&q;,\n    \&q;xethron/migrations-generator\&q;: \&q;dev-l5\&q;,\n    \&q;way/generators\&q;: \&q;dev-feature/laravel-five-stable\&q;\n},\n\&q;repositories\&q;: [\n    {\n        \&q;type\&q;: \&q;git\&q;,\n        \&q;url\&q;: \&q;https://github.com/jamisonvalenta/Laravel-4-Generators.git\&q;\n    }\n],\n\n# config/app.php\n&s;Way\\Generators\\GeneratorsServiceProvider&s;,\n&s;Xethron\\MigrationsGenerator\\MigrationsGeneratorServiceProvider&s;,\n~~~\n\n- Reinstall Form + Html helper, [from laravel collective](https://laravelcollective.com/docs/5.1/html)\n\n~~~  php\n#composer.json\n\&q;require\&q;: {\n    \&q;laravelcollective/html\&q;: \&q;5.1.*\&q;\n}\n\n#config/app.php\n&s;providers&s; =&g; [\n  // ...\n  Collective\\Html\\HtmlServiceProvider::class,\n  // ...\n],\n\n#config/app.php\n&s;aliases&s; =&g; [\n  // ...\n    &s;Form&s; =&g; Collective\\Html\\FormFacade::class,\n    &s;Html&s; =&g; Collective\\Html\\HtmlFacade::class,\n  // ...\n],\n~~~\n\n- Get a good open source IDE: [Atom](https://atom.io/)\n  - no more sublime prompt when saving (ignore if you have never used sublime text)\n    &q;,&q;id&q;:&q;7f240af0-5e80-443c-bb64-7f2f456131a9&q;,&q;bannerUrl&q;:&q;/assets/2015112800.jpg&q;,&q;coverUrl&q;:&q;/assets/2015112800.jpg&q;,&q;postedAt&q;:&q;2015-12-04T16:00:00.000Z&q;,&q;tags&q;:[&q;php&q;],&q;title&q;:&q;Laravel5 Productive Tips&q;,&q;typeCode&q;:1},&q;blogHtml&q;:&q;&l;h2&g;Laravel 5&l;/h2&g;\n&l;p&g;Laravel currently is the most popular PHP framework.&l;/p&g;\n&l;p&g;With the news that &l;a href=\&q;https://twitter.com/official_php/status/672511111896432640\&q;&g;PHP 7 had been released on December the 3th&l;/a&g;, I&s;ll expect a spike in usage of laravel usage. PHP 7 is definitely the best tool for developing web application quickly.&l;/p&g;\n&l;h2&g;Some Productive tips&l;/h2&g;\n&l;ul&g;\n&l;li&g;Create migration scripts directly from database, at the time I&s;m writing, the composer default supporting laravel-4. With this settings, we can easily generate migration script with &l;code&g;php artisan migrate:generate flights&l;/code&g;&l;/li&g;\n&l;/ul&g;\n&l;pre class=\&q;hljs\&q;&g;&l;code&g;&a;quot;require-dev&a;quot;: {\n    &a;quot;fzaninotto/faker&a;quot;: &a;quot;~1.4&a;quot;,\n    &a;quot;mockery/mockery&a;quot;: &a;quot;0.9.*&a;quot;,\n    &a;quot;phpunit/phpunit&a;quot;: &a;quot;~4.0&a;quot;,\n    &a;quot;phpspec/phpspec&a;quot;: &a;quot;~2.1&a;quot;,\n    &a;quot;xethron/migrations-generator&a;quot;: &a;quot;dev-l5&a;quot;,\n    &a;quot;way/generators&a;quot;: &a;quot;dev-feature/laravel-five-stable&a;quot;\n},\n&a;quot;repositories&a;quot;: [\n    {\n        &a;quot;type&a;quot;: &a;quot;git&a;quot;,\n        &a;quot;url&a;quot;: &a;quot;https://github.com/jamisonvalenta/Laravel-4-Generators.git&a;quot;\n    }\n],\n\n# config/app.php\n&s;Way\\Generators\\GeneratorsServiceProvider&s;,\n&s;Xethron\\MigrationsGenerator\\MigrationsGeneratorServiceProvider&s;,\n&l;/code&g;&l;/pre&g;\n&l;ul&g;\n&l;li&g;Reinstall Form + Html helper, &l;a href=\&q;https://laravelcollective.com/docs/5.1/html\&q;&g;from laravel collective&l;/a&g;&l;/li&g;\n&l;/ul&g;\n&l;pre class=\&q;hljs\&q;&g;&l;code&g;#composer.json\n&a;quot;require&a;quot;: {\n    &a;quot;laravelcollective/html&a;quot;: &a;quot;5.1.*&a;quot;\n}\n\n#config/app.php\n&s;providers&s; =&a;gt; [\n  // ...\n  Collective\\Html\\HtmlServiceProvider::class,\n  // ...\n],\n\n#config/app.php\n&s;aliases&s; =&a;gt; [\n  // ...\n    &s;Form&s; =&a;gt; Collective\\Html\\FormFacade::class,\n    &s;Html&s; =&a;gt; Collective\\Html\\HtmlFacade::class,\n  // ...\n],\n&l;/code&g;&l;/pre&g;\n&l;ul&g;\n&l;li&g;Get a good open source IDE: &l;a href=\&q;https://atom.io/\&q;&g;Atom&l;/a&g;\n&l;ul&g;\n&l;li&g;no more sublime prompt when saving (ignore if you have never used sublime text)&l;/li&g;\n&l;/ul&g;\n&l;/li&g;\n&l;/ul&g;\n&q;,&q;showType&q;:3,&q;errorMessage&q;:&q;&q;}</script></body></html>
