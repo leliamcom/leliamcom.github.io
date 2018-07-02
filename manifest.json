@@ -1,6 +1,11 @@
 {
   "name": "Le Liam",
   "short_name": "leliam",
+  "theme_color": "#1976d2",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/",
   "icons": [{
     "src": "icon-128.png",
       "sizes": "128x128",
@@ -25,9 +30,5 @@
       "src": "icon-1024.png",
       "sizes": "1024x1024",
       "type": "image/png"
-    }],
-  "start_url": "/index.html",
-  "display": "standalone",
-  "background_color": "#209CEE",
-  "theme_color": "#FFFFFF"
+    }]
 }
