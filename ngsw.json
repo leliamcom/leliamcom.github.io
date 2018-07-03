@@ -4,8 +4,8 @@
   "assetGroups": [
     {
       "name": "app",
-      "installMode": "prefetch",
-      "updateMode": "prefetch",
+      "installMode": "lazy",
+      "updateMode": "lazy",
       "urls": [
         "/1.c55a9b814e4a3f2b8d9d.js",
         "/10.116e26bef356fe394d77.js",
@@ -38,12 +38,23 @@
     {
       "name": "assets",
       "installMode": "lazy",
-      "updateMode": "prefetch",
+      "updateMode": "lazy",
       "urls": [],
       "patterns": []
     }
   ],
-  "dataGroups": [],
+  "dataGroups": [
+    {
+      "name": "fakeapi",
+      "patterns": [
+        "\\/gql\\/(?:.+\\/)?[^\\/]*\\.json"
+      ],
+      "strategy": "freshness",
+      "maxSize": 9000,
+      "maxAge": 86400000,
+      "version": 1
+    }
+  ],
   "hashTable": {
     "/1.c55a9b814e4a3f2b8d9d.js": "51e8531a18235548f9b87fd895f890a86b7327a9",
     "/10.116e26bef356fe394d77.js": "337f281b5d2f2fb5eb4b123f42df032a1a55103b",
