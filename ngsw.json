@@ -56,9 +56,9 @@
       ],
       "strategy": "performance",
       "maxSize": 1000,
-      "maxAge": 86400000,
+      "maxAge": 3600000,
       "timeoutMs": 10000,
-      "version": 2
+      "version": 3
     }
   ],
   "hashTable": {
