@@ -1,0 +1,325 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="utf-8">
+  <title>Make REST api to partial response, just like GraphQL</title>
+  <base href="/">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta property="fb:app_id" content="1678943848891569">
+
+  <link rel="icon" href="/favicon.ico">
+  <meta name="description" content="Author: Liam, Date: Oct 30, 2018
+The story begins in one day, I want to make NodeJS API endpoints like
+
+GET /api/blogposts?fields=author{name,avatar},title,detail
+
+and it should return me
+[{
+    &quot;author&quot;: {
+        &quot;name&quot;: &quot;Liam Ng&quot;,
+        &quot;avatar&quot;: &quot;https://someurl&quot;,
+    },
+    &quot;title&quot;: &quot;blogpost title&quot;,
+    &quot;detail&quot;: &quot;blogpost detail&quot;
+}]
+~">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://www.leliam.com/assets/2018103000.png">
+  <meta property="og:image:url" content="https://www.leliam.com/assets/2018103000.png">
+  <link rel="preload" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" as="style" onload="this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"></noscript>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-47309606-3"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-47309606-3', { 'send_page_view': false });
+  </script>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1976d2">
+<link rel="stylesheet" href="styles.6ba6ad95da665a077d6d.css"><style ng-transition="leliam">h1[_ngcontent-sc0] {
+  font-size: 1.2em;
+  color: #999;
+  margin-bottom: 0;
+}
+h2[_ngcontent-sc0] {
+  font-size: 2em;
+  margin-top: 0;
+  padding-top: 0;
+}
+nav[_ngcontent-sc0]   a[_ngcontent-sc0] {
+  padding: 5px 10px;
+  text-decoration: none;
+  margin-top: 10px;
+  display: inline-block;
+  background-color: #eee;
+  border-radius: 4px;
+}
+nav[_ngcontent-sc0]   a[_ngcontent-sc0]:visited, a[_ngcontent-sc0]:link {
+  color: #607D8B;
+}
+nav[_ngcontent-sc0]   a[_ngcontent-sc0]:hover {
+  color: #039be5;
+  background-color: #CFD8DC;
+}
+nav[_ngcontent-sc0]   a.active[_ngcontent-sc0] {
+  color: #039be5;
+}
+body[_ngcontent-sc0] {
+  height: 100%;
+}</style><style ng-transition="leliam">.toolbar-fill-remaining-space[_ngcontent-sc2] {
+  
+  -ms-flex: 1 1 auto;
+      flex: 1 1 auto;
+}
+a[_ngcontent-sc2] {
+  text-decoration: none;
+}
+@media only screen and (max-width: 600px) {
+  .minwidth-600[_ngcontent-sc2] {
+    display: none !important;
+  }
+}
+@media only screen and (max-width: 700px) {
+  .minwidth-700[_ngcontent-sc2] {
+    display: none !important;
+  }
+}
+@media only screen and (min-width: 601px) {
+  .maxwidth-600[_ngcontent-sc2] {
+    display: none !important;
+  }
+}
+@media only screen and (min-width: 701px) {
+  .maxwidth-700[_ngcontent-sc2] {
+    display: none !important;
+  }
+}</style><style ng-transition="leliam"></style><style ng-transition="leliam">@media screen and (-ms-high-contrast:active){.mat-toolbar{outline:solid 1px}}.mat-toolbar-row,.mat-toolbar-single-row{display:flex;box-sizing:border-box;padding:0 16px;width:100%;flex-direction:row;align-items:center;white-space:nowrap}.mat-toolbar-multiple-rows{display:flex;box-sizing:border-box;flex-direction:column;width:100%}.mat-toolbar-multiple-rows{min-height:64px}.mat-toolbar-row,.mat-toolbar-single-row{height:64px}@media (max-width:599px){.mat-toolbar-multiple-rows{min-height:56px}.mat-toolbar-row,.mat-toolbar-single-row{height:56px}}</style><style ng-transition="leliam">.mat-menu-panel{min-width:112px;max-width:280px;overflow:auto;-webkit-overflow-scrolling:touch;max-height:calc(100vh - 48px);border-radius:2px;outline:0}.mat-menu-panel:not([class*=mat-elevation-z]){box-shadow:0 3px 1px -2px rgba(0,0,0,.2),0 2px 2px 0 rgba(0,0,0,.14),0 1px 5px 0 rgba(0,0,0,.12)}@media screen and (-ms-high-contrast:active){.mat-menu-panel{outline:solid 1px}}.mat-menu-content:not(:empty){padding-top:8px;padding-bottom:8px}.mat-menu-item{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;cursor:pointer;outline:0;border:none;-webkit-tap-highlight-color:transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;line-height:48px;height:48px;padding:0 16px;text-align:left;text-decoration:none;max-width:100%;position:relative}.mat-menu-item::-moz-focus-inner{border:0}.mat-menu-item[disabled]{cursor:default}[dir=rtl] .mat-menu-item{text-align:right}.mat-menu-item .mat-icon{margin-right:16px;vertical-align:middle}.mat-menu-item .mat-icon svg{vertical-align:top}[dir=rtl] .mat-menu-item .mat-icon{margin-left:16px;margin-right:0}@media screen and (-ms-high-contrast:active){.mat-menu-item-highlighted,.mat-menu-item.cdk-keyboard-focused,.mat-menu-item.cdk-program-focused{outline:dotted 1px}}.mat-menu-item-submenu-trigger{padding-right:32px}.mat-menu-item-submenu-trigger::after{width:0;height:0;border-style:solid;border-width:5px 0 5px 5px;border-color:transparent transparent transparent currentColor;content:'';display:inline-block;position:absolute;top:50%;right:16px;transform:translateY(-50%)}[dir=rtl] .mat-menu-item-submenu-trigger{padding-right:16px;padding-left:32px}[dir=rtl] .mat-menu-item-submenu-trigger::after{right:auto;left:16px;transform:rotateY(180deg) translateY(-50%)}.mat-menu-panel.ng-animating .mat-menu-item-submenu-trigger{pointer-events:none}button.mat-menu-item{width:100%}.mat-menu-item .mat-menu-ripple{top:0;left:0;right:0;bottom:0;position:absolute;pointer-events:none}</style><style ng-transition="leliam">.mat-button,.mat-flat-button,.mat-icon-button,.mat-stroked-button{box-sizing:border-box;position:relative;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;cursor:pointer;outline:0;border:none;-webkit-tap-highlight-color:transparent;display:inline-block;white-space:nowrap;text-decoration:none;vertical-align:baseline;text-align:center;margin:0;min-width:88px;line-height:36px;padding:0 16px;border-radius:2px;overflow:visible}.mat-button::-moz-focus-inner,.mat-flat-button::-moz-focus-inner,.mat-icon-button::-moz-focus-inner,.mat-stroked-button::-moz-focus-inner{border:0}.mat-button[disabled],.mat-flat-button[disabled],.mat-icon-button[disabled],.mat-stroked-button[disabled]{cursor:default}.mat-button.cdk-keyboard-focused .mat-button-focus-overlay,.mat-button.cdk-program-focused .mat-button-focus-overlay,.mat-flat-button.cdk-keyboard-focused .mat-button-focus-overlay,.mat-flat-button.cdk-program-focused .mat-button-focus-overlay,.mat-icon-button.cdk-keyboard-focused .mat-button-focus-overlay,.mat-icon-button.cdk-program-focused .mat-button-focus-overlay,.mat-stroked-button.cdk-keyboard-focused .mat-button-focus-overlay,.mat-stroked-button.cdk-program-focused .mat-button-focus-overlay{opacity:1}.mat-button::-moz-focus-inner,.mat-flat-button::-moz-focus-inner,.mat-icon-button::-moz-focus-inner,.mat-stroked-button::-moz-focus-inner{border:0}.mat-button .mat-button-focus-overlay,.mat-icon-button .mat-button-focus-overlay{transition:none;opacity:0}.mat-button:hover .mat-button-focus-overlay,.mat-stroked-button:hover .mat-button-focus-overlay{opacity:1}@media (hover:none){.mat-button:hover .mat-button-focus-overlay,.mat-stroked-button:hover .mat-button-focus-overlay{opacity:0}}.mat-raised-button{box-sizing:border-box;position:relative;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;cursor:pointer;outline:0;border:none;-webkit-tap-highlight-color:transparent;display:inline-block;white-space:nowrap;text-decoration:none;vertical-align:baseline;text-align:center;margin:0;min-width:88px;line-height:36px;padding:0 16px;border-radius:2px;overflow:visible;transform:translate3d(0,0,0);transition:background .4s cubic-bezier(.25,.8,.25,1),box-shadow 280ms cubic-bezier(.4,0,.2,1)}.mat-raised-button::-moz-focus-inner{border:0}.mat-raised-button[disabled]{cursor:default}.mat-raised-button.cdk-keyboard-focused .mat-button-focus-overlay,.mat-raised-button.cdk-program-focused .mat-button-focus-overlay{opacity:1}.mat-raised-button::-moz-focus-inner{border:0}.mat-raised-button:not([class*=mat-elevation-z]){box-shadow:0 3px 1px -2px rgba(0,0,0,.2),0 2px 2px 0 rgba(0,0,0,.14),0 1px 5px 0 rgba(0,0,0,.12)}._mat-animation-noopable.mat-raised-button{transition:none;animation:none}.mat-raised-button:not([disabled]):active:not([class*=mat-elevation-z]){box-shadow:0 5px 5px -3px rgba(0,0,0,.2),0 8px 10px 1px rgba(0,0,0,.14),0 3px 14px 2px rgba(0,0,0,.12)}.mat-raised-button[disabled]{box-shadow:none}.mat-stroked-button{border:1px solid currentColor;padding:0 15px;line-height:34px}.mat-stroked-button:not([class*=mat-elevation-z]){box-shadow:0 0 0 0 rgba(0,0,0,.2),0 0 0 0 rgba(0,0,0,.14),0 0 0 0 rgba(0,0,0,.12)}.mat-flat-button:not([class*=mat-elevation-z]){box-shadow:0 0 0 0 rgba(0,0,0,.2),0 0 0 0 rgba(0,0,0,.14),0 0 0 0 rgba(0,0,0,.12)}.mat-fab{box-sizing:border-box;position:relative;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;cursor:pointer;outline:0;border:none;-webkit-tap-highlight-color:transparent;display:inline-block;white-space:nowrap;text-decoration:none;vertical-align:baseline;text-align:center;margin:0;min-width:88px;line-height:36px;padding:0 16px;border-radius:2px;overflow:visible;transform:translate3d(0,0,0);transition:background .4s cubic-bezier(.25,.8,.25,1),box-shadow 280ms cubic-bezier(.4,0,.2,1);min-width:0;border-radius:50%;width:56px;height:56px;padding:0;flex-shrink:0}.mat-fab::-moz-focus-inner{border:0}.mat-fab[disabled]{cursor:default}.mat-fab.cdk-keyboard-focused .mat-button-focus-overlay,.mat-fab.cdk-program-focused .mat-button-focus-overlay{opacity:1}.mat-fab::-moz-focus-inner{border:0}.mat-fab:not([class*=mat-elevation-z]){box-shadow:0 3px 1px -2px rgba(0,0,0,.2),0 2px 2px 0 rgba(0,0,0,.14),0 1px 5px 0 rgba(0,0,0,.12)}._mat-animation-noopable.mat-fab{transition:none;animation:none}.mat-fab:not([disabled]):active:not([class*=mat-elevation-z]){box-shadow:0 5px 5px -3px rgba(0,0,0,.2),0 8px 10px 1px rgba(0,0,0,.14),0 3px 14px 2px rgba(0,0,0,.12)}.mat-fab[disabled]{box-shadow:none}.mat-fab:not([class*=mat-elevation-z]){box-shadow:0 3px 5px -1px rgba(0,0,0,.2),0 6px 10px 0 rgba(0,0,0,.14),0 1px 18px 0 rgba(0,0,0,.12)}.mat-fab:not([disabled]):active:not([class*=mat-elevation-z]){box-shadow:0 7px 8px -4px rgba(0,0,0,.2),0 12px 17px 2px rgba(0,0,0,.14),0 5px 22px 4px rgba(0,0,0,.12)}.mat-fab .mat-button-wrapper{padding:16px 0;display:inline-block;line-height:24px}.mat-mini-fab{box-sizing:border-box;position:relative;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;cursor:pointer;outline:0;border:none;-webkit-tap-highlight-color:transparent;display:inline-block;white-space:nowrap;text-decoration:none;vertical-align:baseline;text-align:center;margin:0;min-width:88px;line-height:36px;padding:0 16px;border-radius:2px;overflow:visible;transform:translate3d(0,0,0);transition:background .4s cubic-bezier(.25,.8,.25,1),box-shadow 280ms cubic-bezier(.4,0,.2,1);min-width:0;border-radius:50%;width:40px;height:40px;padding:0;flex-shrink:0}.mat-mini-fab::-moz-focus-inner{border:0}.mat-mini-fab[disabled]{cursor:default}.mat-mini-fab.cdk-keyboard-focused .mat-button-focus-overlay,.mat-mini-fab.cdk-program-focused .mat-button-focus-overlay{opacity:1}.mat-mini-fab::-moz-focus-inner{border:0}.mat-mini-fab:not([class*=mat-elevation-z]){box-shadow:0 3px 1px -2px rgba(0,0,0,.2),0 2px 2px 0 rgba(0,0,0,.14),0 1px 5px 0 rgba(0,0,0,.12)}._mat-animation-noopable.mat-mini-fab{transition:none;animation:none}.mat-mini-fab:not([disabled]):active:not([class*=mat-elevation-z]){box-shadow:0 5px 5px -3px rgba(0,0,0,.2),0 8px 10px 1px rgba(0,0,0,.14),0 3px 14px 2px rgba(0,0,0,.12)}.mat-mini-fab[disabled]{box-shadow:none}.mat-mini-fab:not([class*=mat-elevation-z]){box-shadow:0 3px 5px -1px rgba(0,0,0,.2),0 6px 10px 0 rgba(0,0,0,.14),0 1px 18px 0 rgba(0,0,0,.12)}.mat-mini-fab:not([disabled]):active:not([class*=mat-elevation-z]){box-shadow:0 7px 8px -4px rgba(0,0,0,.2),0 12px 17px 2px rgba(0,0,0,.14),0 5px 22px 4px rgba(0,0,0,.12)}.mat-mini-fab .mat-button-wrapper{padding:8px 0;display:inline-block;line-height:24px}.mat-icon-button{padding:0;min-width:0;width:40px;height:40px;flex-shrink:0;line-height:40px;border-radius:50%}.mat-icon-button .mat-icon,.mat-icon-button i{line-height:24px}.mat-button-focus-overlay,.mat-button-ripple.mat-ripple{top:0;left:0;right:0;bottom:0;position:absolute;pointer-events:none;border-radius:inherit}.mat-button-focus-overlay{background-color:rgba(0,0,0,.12);border-radius:inherit;opacity:0;transition:opacity .2s cubic-bezier(.35,0,.25,1),background-color .2s cubic-bezier(.35,0,.25,1)}._mat-animation-noopable .mat-button-focus-overlay{transition:none}@media screen and (-ms-high-contrast:active){.mat-button-focus-overlay{background-color:rgba(255,255,255,.5)}}.mat-button-ripple-round{border-radius:50%;z-index:1}.mat-button .mat-button-wrapper>*,.mat-fab .mat-button-wrapper>*,.mat-flat-button .mat-button-wrapper>*,.mat-icon-button .mat-button-wrapper>*,.mat-mini-fab .mat-button-wrapper>*,.mat-raised-button .mat-button-wrapper>*,.mat-stroked-button .mat-button-wrapper>*{vertical-align:middle}.mat-form-field:not(.mat-form-field-appearance-legacy) .mat-form-field-prefix .mat-icon-button,.mat-form-field:not(.mat-form-field-appearance-legacy) .mat-form-field-suffix .mat-icon-button{display:block;font-size:inherit;width:2.5em;height:2.5em}@media screen and (-ms-high-contrast:active){.mat-button,.mat-fab,.mat-flat-button,.mat-icon-button,.mat-mini-fab,.mat-raised-button{outline:solid 1px}}</style><style ng-transition="leliam">.mat-icon{background-repeat:no-repeat;display:inline-block;fill:currentColor;height:24px;width:24px}.mat-icon.mat-icon-inline{font-size:inherit;height:inherit;line-height:inherit;width:inherit}[dir=rtl] .mat-icon-rtl-mirror{transform:scale(-1,1)}.mat-form-field:not(.mat-form-field-appearance-legacy) .mat-form-field-prefix .mat-icon,.mat-form-field:not(.mat-form-field-appearance-legacy) .mat-form-field-suffix .mat-icon{display:block}.mat-form-field:not(.mat-form-field-appearance-legacy) .mat-form-field-prefix .mat-icon-button .mat-icon,.mat-form-field:not(.mat-form-field-appearance-legacy) .mat-form-field-suffix .mat-icon-button .mat-icon{margin:auto}</style><style ng-transition="leliam">@import url('https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/dracula.min.css');
+.blogpost-inner[_ngcontent-sc21]     img {
+  max-width: 100%
+}
+.banner-img[_ngcontent-sc21] {
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+.td-avatar[_ngcontent-sc21] {
+  padding-right: 10px;
+}
+.avatar-small[_ngcontent-sc21] {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+}
+a.tag[_ngcontent-sc21] {
+  margin-right: 5px;
+}
+.banner-image-container[_ngcontent-sc21] {
+  text-align: center;
+}
+.banner-image-container[_ngcontent-sc21]   img[_ngcontent-sc21] {
+  max-width: 100%;
+  max-height: 300px;
+}
+  .fb-comments:before {
+  content: "Loading Facebook Comments Plugin...";
+}
+  .fb-comments[fb-xfbml-state="rendered"]:before {
+  content: "";
+}</style><style ng-transition="leliam">.mat-progress-spinner{display:block;position:relative}.mat-progress-spinner svg{position:absolute;transform:rotate(-90deg);top:0;left:0;transform-origin:center;overflow:visible}.mat-progress-spinner circle{fill:transparent;transform-origin:center;transition:stroke-dashoffset 225ms linear}._mat-animation-noopable.mat-progress-spinner circle{transition:none;animation:none}.mat-progress-spinner.mat-progress-spinner-indeterminate-animation[mode=indeterminate]{animation:mat-progress-spinner-linear-rotate 2s linear infinite}._mat-animation-noopable.mat-progress-spinner.mat-progress-spinner-indeterminate-animation[mode=indeterminate]{transition:none;animation:none}.mat-progress-spinner.mat-progress-spinner-indeterminate-animation[mode=indeterminate] circle{transition-property:stroke;animation-duration:4s;animation-timing-function:cubic-bezier(.35,0,.25,1);animation-iteration-count:infinite}._mat-animation-noopable.mat-progress-spinner.mat-progress-spinner-indeterminate-animation[mode=indeterminate] circle{transition:none;animation:none}.mat-progress-spinner.mat-progress-spinner-indeterminate-fallback-animation[mode=indeterminate]{animation:mat-progress-spinner-stroke-rotate-fallback 10s cubic-bezier(.87,.03,.33,1) infinite}._mat-animation-noopable.mat-progress-spinner.mat-progress-spinner-indeterminate-fallback-animation[mode=indeterminate]{transition:none;animation:none}.mat-progress-spinner.mat-progress-spinner-indeterminate-fallback-animation[mode=indeterminate] circle{transition-property:stroke}._mat-animation-noopable.mat-progress-spinner.mat-progress-spinner-indeterminate-fallback-animation[mode=indeterminate] circle{transition:none;animation:none}@keyframes mat-progress-spinner-linear-rotate{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}@keyframes mat-progress-spinner-stroke-rotate-100{0%{stroke-dashoffset:268.60617px;transform:rotate(0)}12.5%{stroke-dashoffset:56.54867px;transform:rotate(0)}12.5001%{stroke-dashoffset:56.54867px;transform:rotateX(180deg) rotate(72.5deg)}25%{stroke-dashoffset:268.60617px;transform:rotateX(180deg) rotate(72.5deg)}25.0001%{stroke-dashoffset:268.60617px;transform:rotate(270deg)}37.5%{stroke-dashoffset:56.54867px;transform:rotate(270deg)}37.5001%{stroke-dashoffset:56.54867px;transform:rotateX(180deg) rotate(161.5deg)}50%{stroke-dashoffset:268.60617px;transform:rotateX(180deg) rotate(161.5deg)}50.0001%{stroke-dashoffset:268.60617px;transform:rotate(180deg)}62.5%{stroke-dashoffset:56.54867px;transform:rotate(180deg)}62.5001%{stroke-dashoffset:56.54867px;transform:rotateX(180deg) rotate(251.5deg)}75%{stroke-dashoffset:268.60617px;transform:rotateX(180deg) rotate(251.5deg)}75.0001%{stroke-dashoffset:268.60617px;transform:rotate(90deg)}87.5%{stroke-dashoffset:56.54867px;transform:rotate(90deg)}87.5001%{stroke-dashoffset:56.54867px;transform:rotateX(180deg) rotate(341.5deg)}100%{stroke-dashoffset:268.60617px;transform:rotateX(180deg) rotate(341.5deg)}}@keyframes mat-progress-spinner-stroke-rotate-fallback{0%{transform:rotate(0)}25%{transform:rotate(1170deg)}50%{transform:rotate(2340deg)}75%{transform:rotate(3510deg)}100%{transform:rotate(4680deg)}}</style><meta property="og:url" content="https://www.leliam.com/blogpost/1c62698f-da2a-4c6c-8c8f-fc555cdfbee9"><meta property="og:title" content="Make REST api to partial response, just like GraphQL"><meta property="og:description" content="Author: Liam, Date: Oct 30, 2018
+The story begins in one day, I want to make NodeJS API endpoints like
+
+GET /api/blogposts?fields=author{name,avatar},title,detail
+
+and it should return me
+[{
+    &quot;author&quot;: {
+        &quot;name&quot;: &quot;Liam Ng&quot;,
+        &quot;avatar&quot;: &quot;https://someurl&quot;,
+    },
+    &quot;title&quot;: &quot;blogpost title&quot;,
+    &quot;detail&quot;: &quot;blogpost detail&quot;
+}]
+~"></head>
+<body>
+  <div id="fb-root"></div>
+  <app-root _nghost-sc0="" ng-version="6.1.0"><!----><div _ngcontent-sc0="" class="mat-typography"><app-nav _ngcontent-sc0="" _nghost-sc2=""><div _ngcontent-sc2="" class="mat-typography"><mat-toolbar _ngcontent-sc2="" class="mat-toolbar mat-toolbar-single-row"><mat-menu _ngcontent-sc2="" class="ng-tns-c6-0 ng-star-inserted"><!----></mat-menu><a _ngcontent-sc2="" mat-button="" routerlink="/" class="mat-button _mat-animation-noopable" tabindex="0" aria-disabled="false" href="/"><span class="mat-button-wrapper"><h3 _ngcontent-sc2="">Le Liam</h3></span><div class="mat-button-ripple mat-ripple" matripple=""></div><div class="mat-button-focus-overlay"></div></a><a _ngcontent-sc2="" class="minwidth-600 mat-button _mat-animation-noopable" mat-button="" routerlink="/" routerlinkactive="mat-primary" tabindex="0" aria-disabled="false" href="/"><span class="mat-button-wrapper">Home</span><div class="mat-button-ripple mat-ripple" matripple=""></div><div class="mat-button-focus-overlay"></div></a><a _ngcontent-sc2="" mat-button="" routerlink="/tags" routerlinkactive="mat-primary" class="mat-button _mat-animation-noopable" tabindex="0" aria-disabled="false" href="/tags"><span class="mat-button-wrapper">Tags</span><div class="mat-button-ripple mat-ripple" matripple=""></div><div class="mat-button-focus-overlay"></div></a><a _ngcontent-sc2="" class="minwidth-600 mat-button _mat-animation-noopable" mat-button="" routerlink="/blogposts" routerlinkactive="mat-primary" tabindex="0" aria-disabled="false" href="/blogposts"><span class="mat-button-wrapper">Blogposts</span><div class="mat-button-ripple mat-ripple" matripple=""></div><div class="mat-button-focus-overlay"></div></a><a _ngcontent-sc2="" class="minwidth-700 mat-button _mat-animation-noopable" mat-button="" routerlink="/contact" routerlinkactive="mat-primary" tabindex="0" aria-disabled="false" href="/contact"><span class="mat-button-wrapper">Contact</span><div class="mat-button-ripple mat-ripple" matripple=""></div><div class="mat-button-focus-overlay"></div></a><span _ngcontent-sc2="" class="toolbar-fill-remaining-space"></span><button _ngcontent-sc2="" aria-haspopup="true" aria-label="More" class="maxwidth-700 mat-icon-button mat-primary _mat-animation-noopable" color="primary" mat-icon-button=""><span class="mat-button-wrapper"><mat-icon _ngcontent-sc2="" class="mat-icon" role="img" svgicon="more_vert" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fit="" preserveAspectRatio="xMidYMid meet" focusable="false">
+<path d="M0 0h24v24H0z" fill="none"></path>
+<path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path>
+</svg></mat-icon></span><div class="mat-button-ripple mat-ripple mat-button-ripple-round" matripple=""></div><div class="mat-button-focus-overlay"></div></button></mat-toolbar></div></app-nav><app-status-bar _ngcontent-sc0="" _nghost-sc3=""><!----></app-status-bar><router-outlet _ngcontent-sc0=""></router-outlet><app-blogpost _nghost-sc21="" class="ng-star-inserted"><!----><!----><!----><!----><div _ngcontent-sc21="" class="ng-star-inserted"><!----><div _ngcontent-sc21="" class="ng-star-inserted"><div _ngcontent-sc21="" class="main-bg" style="padding-bottom:20px"><div _ngcontent-sc21="" class="container"><br _ngcontent-sc21=""><table _ngcontent-sc21=""><tbody _ngcontent-sc21=""><tr _ngcontent-sc21=""><td _ngcontent-sc21="" class="td-avatar" rowspan="2"><div _ngcontent-sc21="" class="avatar-small" style="background-image:url('/assets/32x32_avatar.jpg');background-size:cover;"></div></td><td _ngcontent-sc21="">Liam</td></tr><tr _ngcontent-sc21=""><td _ngcontent-sc21="" style="color:rgba(0,0,0,.54)"><small _ngcontent-sc21="">Oct 30, 2018</small></td></tr></tbody></table><!----><div _ngcontent-sc21="" class="banner-image-container ng-star-inserted"><img _ngcontent-sc21="" alt="blogpost banner image" src="/assets/2018103000.png"></div><br _ngcontent-sc21=""><h1 _ngcontent-sc21=""> Make REST api to partial response, just like GraphQL </h1><div _ngcontent-sc21="" class="blogpost-inner"><p>The story begins in one day, I want to make NodeJS API endpoints like</p>
+<p><code>GET /api/blogposts?fields=author{name,avatar},title,detail</code></p>
+<p>and it should return me</p>
+<pre class="hljs"><code>[{
+    <span class="hljs-string">"author"</span>: {
+        <span class="hljs-string">"name"</span>: <span class="hljs-string">"Liam Ng"</span>,
+        <span class="hljs-string">"avatar"</span>: <span class="hljs-string">"https://someurl"</span>,
+    },
+    <span class="hljs-string">"title"</span>: <span class="hljs-string">"blogpost title"</span>,
+    <span class="hljs-string">"detail"</span>: <span class="hljs-string">"blogpost detail"</span>
+}]
+</code></pre>
+<p>When using GraphQL, partial response is a build in tool. However sometimes REST is a more suitable use case.</p>
+<p>Searching the web, I do find some libraries that do similar things however the feature is somewhat limited. Developers should not be in situation that</p>
+<ol>
+<li>want to implement partial response</li>
+<li>not so supported in REST</li>
+<li>use GraphQL</li>
+</ol>
+<p>Instead, REST should be able to achieve it as easily, with a library.</p>
+<h2>Things to acknowledge</h2>
+<ul>
+<li>Graphql still provide you a better way to do concurrent GET request (though the code might get complicated on retry on partial error)</li>
+<li>It should be build with somethings like swagger to let user knows available fields (it do comes with handy function to return response schema in OpenAPI 3 format)</li>
+</ul>
+<h2>Introduce partial-responsify</h2>
+<p>tl;dr: you can find the code at <a href="https://github.com/nghenglim/partial-responsify%60">github</a></p>
+<p>Using it should be simple</p>
+<pre class="hljs"><code><span class="hljs-keyword">import</span> { PartialResponsify, ResponseFormat } <span class="hljs-keyword">from</span> <span class="hljs-string">"partial-responsify"</span>;
+
+<span class="hljs-comment">// ideally should be inside DI</span>
+<span class="hljs-keyword">const</span> pr = <span class="hljs-keyword">new</span> PartialResponsify();
+
+<span class="hljs-comment">// it is normally inside ctx.query for Koa</span>
+<span class="hljs-comment">// default don't support whitespace or - or _</span>
+<span class="hljs-comment">// (normally should be camelcase?)</span>
+<span class="hljs-keyword">const</span> fields = <span class="hljs-string">"name,coords,author{name{first}}"</span>;
+<span class="hljs-keyword">const</span> responseFormat: ResponseFormat = {
+    <span class="hljs-attr">fields</span>: {
+        <span class="hljs-attr">author</span>: {
+            <span class="hljs-attr">fields</span>: {
+                <span class="hljs-attr">name</span>: {
+                    <span class="hljs-attr">fields</span>: {
+                        <span class="hljs-attr">first</span>: {
+                            <span class="hljs-attr">type</span>: <span class="hljs-string">"string"</span>,
+                        },
+                        <span class="hljs-attr">last</span>: {
+                            <span class="hljs-attr">type</span>: <span class="hljs-string">"string"</span>,
+                        },
+                    },
+                    <span class="hljs-attr">type</span>: <span class="hljs-string">"object"</span>,
+                },
+            },
+            <span class="hljs-attr">type</span>: <span class="hljs-string">"object"</span>,
+        },
+        <span class="hljs-attr">coords</span>: {
+            <span class="hljs-attr">items</span>: {
+                <span class="hljs-attr">items</span>: {
+                    <span class="hljs-attr">type</span>: <span class="hljs-string">"number"</span>,
+                },
+                <span class="hljs-attr">type</span>: <span class="hljs-string">"array"</span>,
+            },
+            <span class="hljs-attr">type</span>: <span class="hljs-string">"array"</span>,
+        },
+        <span class="hljs-attr">license</span>: {
+            <span class="hljs-attr">type</span>: <span class="hljs-string">"string"</span>,
+        },
+        <span class="hljs-attr">name</span>: {
+            <span class="hljs-attr">type</span>: <span class="hljs-string">"string"</span>,
+        },
+    },
+    <span class="hljs-attr">type</span>: <span class="hljs-string">"object"</span>,
+};
+
+<span class="hljs-comment">// you can use this fieldsToParse to track the fields usage</span>
+<span class="hljs-keyword">const</span> fieldsToParse = pr.parseFields(fields, responseFormat);
+<span class="hljs-built_in">console</span>.log(fieldsToParse);
+
+<span class="hljs-comment">// and then you perform some logic and got the result</span>
+<span class="hljs-keyword">const</span> result = {
+    <span class="hljs-attr">author</span>: {
+        <span class="hljs-attr">name</span>: {
+            <span class="hljs-attr">first</span>: <span class="hljs-string">"Liam"</span>,
+            <span class="hljs-attr">last</span>: <span class="hljs-string">"Ng"</span>,
+        },
+        <span class="hljs-attr">url</span>: <span class="hljs-string">"https://www.leliam.com"</span>,
+    },
+    <span class="hljs-attr">coords</span>: [[<span class="hljs-number">13.37</span>, <span class="hljs-number">1.337</span>], [<span class="hljs-number">0</span>, <span class="hljs-number">0</span>]],
+    <span class="hljs-attr">license</span>: <span class="hljs-string">"MIT"</span>,
+    <span class="hljs-attr">name</span>: <span class="hljs-string">"partial-responsify"</span>,
+};
+<span class="hljs-keyword">const</span> res = pr.parseResult&lt;any&gt;(fieldsToParse, responseFormat, result);
+<span class="hljs-built_in">console</span>.log(res);
+<span class="hljs-comment">/*
+the result should be:
+[ [ [], 'name' ],
+  [ [], 'coords' ],
+  [ [ 'author', 'name' ], 'first' ] ]
+{ author: { name: { first: 'Liam' } },
+  coords: [ [ 13.37, 1.337 ], [ 0, 0 ] ],
+  name: 'partial-responsify' }
+*/</span>
+</code></pre>
+<p>Since we use <code>responseFormat</code> to validate the response, it will be great if there is a function to generate swagger response schema based on it!</p>
+<pre class="hljs"><code><span class="hljs-keyword">import</span> { ResponseFormat, SchemaGenerator } <span class="hljs-keyword">from</span> <span class="hljs-string">"partial-responsify"</span>;
+<span class="hljs-keyword">const</span> sgen = <span class="hljs-keyword">new</span> SchemaGenerator();
+<span class="hljs-keyword">const</span> responseFormat: ResponseFormat = {
+    <span class="hljs-attr">items</span>: {
+        <span class="hljs-attr">fields</span>: {
+            <span class="hljs-attr">a</span>: {
+                <span class="hljs-attr">type</span>: <span class="hljs-string">"number"</span>,
+            },
+            <span class="hljs-attr">b</span>: {
+                <span class="hljs-attr">type</span>: <span class="hljs-string">"string"</span>,
+            },
+            <span class="hljs-attr">c</span>: {
+                <span class="hljs-attr">type</span>: <span class="hljs-string">"integer"</span>,
+            },
+            <span class="hljs-attr">d</span>: {
+                <span class="hljs-attr">format</span>: <span class="hljs-string">"uuid"</span>,
+                <span class="hljs-attr">type</span>: <span class="hljs-string">"string"</span>,
+            },
+            <span class="hljs-attr">e</span>: {
+                <span class="hljs-attr">fields</span>: {
+                    <span class="hljs-attr">a</span>: {
+                        <span class="hljs-attr">type</span>: <span class="hljs-string">"number"</span>,
+                    },
+                },
+                <span class="hljs-attr">type</span>: <span class="hljs-string">"object"</span>,
+            },
+        },
+        <span class="hljs-attr">type</span>: <span class="hljs-string">"object"</span>,
+    },
+    <span class="hljs-attr">type</span>: <span class="hljs-string">"array"</span>,
+};
+<span class="hljs-keyword">const</span> result = sgen.generate(responseFormat);
+<span class="hljs-built_in">console</span>.log(result);
+<span class="hljs-comment">/*
+{
+    items: {
+        properties: {
+            a: {
+                type: "number",
+            },
+            b: {
+                type: "string",
+            },
+            c: {
+                type: "integer",
+            },
+            d: {
+                format: "uuid",
+                type: "string",
+            },
+            e: {
+                properties: {
+                    a: {
+                        type: "number",
+                    },
+                },
+                type: "object",
+            },
+        },
+        type: "object",
+    },
+    type: "array",
+}
+*/</span>
+</code></pre>
+<h2>To make it better</h2>
+<p>It will require a library to auto generate Swagger JSON file to make it shine. It is not hard to make the library however will be large amount of works to support every edge case.</p>
+</div><!----><a _ngcontent-sc21="" class="tag mat-stroked-button _mat-animation-noopable ng-star-inserted" mat-stroked-button="" tabindex="0" aria-disabled="false" href="/tag/nodejs"><span class="mat-button-wrapper">nodejs</span><div class="mat-button-ripple mat-ripple" matripple=""></div><div class="mat-button-focus-overlay"></div></a><a _ngcontent-sc21="" class="tag mat-stroked-button _mat-animation-noopable ng-star-inserted" mat-stroked-button="" tabindex="0" aria-disabled="false" href="/tag/opensource"><span class="mat-button-wrapper">opensource</span><div class="mat-button-ripple mat-ripple" matripple=""></div><div class="mat-button-focus-overlay"></div></a><a _ngcontent-sc21="" class="tag mat-stroked-button _mat-animation-noopable ng-star-inserted" mat-stroked-button="" tabindex="0" aria-disabled="false" href="/tag/typescript"><span class="mat-button-wrapper">typescript</span><div class="mat-button-ripple mat-ripple" matripple=""></div><div class="mat-button-focus-overlay"></div></a></div></div><div _ngcontent-sc21="" align="middle" class="container" style="padding:20px 0"><h2 _ngcontent-sc21="">Comments</h2><!----><button _ngcontent-sc21="" color="primary" mat-stroked-button="" class="mat-stroked-button mat-primary _mat-animation-noopable ng-star-inserted"><span class="mat-button-wrapper">Load Comments</span><div class="mat-button-ripple mat-ripple" matripple=""></div><div class="mat-button-focus-overlay"></div></button><div _ngcontent-sc21="" id="fbCommentArea"></div></div></div></div></app-blogpost></div><!----></app-root>
+<script type="text/javascript" src="runtime.21d663edf3f5d89b8fb8.js"></script><script type="text/javascript" src="polyfills.ff2bf6f47cc2a735f015.js"></script><script type="text/javascript" src="main.f94b940b8885eb3f38ff.js" defer></script>
+
+<script id="leliam-state" type="application/json">{&q;blogpost-from_server&q;:true,&q;blogpost-blogpost&q;:{&q;author&q;:{&q;avatar&q;:&q;/assets/32x32_avatar.jpg&q;,&q;name&q;:&q;Liam&q;,&q;tagline&q;:&q;Make people great again!&q;},&q;description&q;:&q;The story begins in one day, I want to make NodeJS API endpoints like\n\n`GET /api/blogposts?fields=author{name,avatar},title,detail`\n\nand it should return me\n~~~js\n[{\n    \&q;author\&q;: {\n        \&q;name\&q;: \&q;Liam Ng\&q;,\n        \&q;avatar\&q;: \&q;https://someurl\&q;,\n    },\n    \&q;title\&q;: \&q;blogpost title\&q;,\n    \&q;detail\&q;: \&q;blogpost detail\&q;\n}]\n~~~&q;,&q;data&q;:&q;The story begins in one day, I want to make NodeJS API endpoints like\n\n`GET /api/blogposts?fields=author{name,avatar},title,detail`\n\nand it should return me\n~~~js\n[{\n    \&q;author\&q;: {\n        \&q;name\&q;: \&q;Liam Ng\&q;,\n        \&q;avatar\&q;: \&q;https://someurl\&q;,\n    },\n    \&q;title\&q;: \&q;blogpost title\&q;,\n    \&q;detail\&q;: \&q;blogpost detail\&q;\n}]\n~~~\n\nWhen using GraphQL, partial response is a build in tool. However sometimes REST is a more suitable use case.\n\nSearching the web, I do find some libraries that do similar things however the feature is somewhat limited. Developers should not be in situation that \n1. want to implement partial response \n2. not so supported in REST\n3. use GraphQL\n\nInstead, REST should be able to achieve it as easily, with a library.\n\n## Things to acknowledge\n- Graphql still provide you a better way to do concurrent GET request (though the code might get complicated on retry on partial error)\n- It should be build with somethings like swagger to let user knows available fields (it do comes with handy function to return response schema in OpenAPI 3 format)\n\n## Introduce partial-responsify\ntl;dr: you can find the code at [github](https://github.com/nghenglim/partial-responsify`)\n\nUsing it should be simple\n~~~js\nimport { PartialResponsify, ResponseFormat } from \&q;partial-responsify\&q;;\n\n// ideally should be inside DI\nconst pr = new PartialResponsify();\n\n// it is normally inside ctx.query for Koa\n// default don&s;t support whitespace or - or _\n// (normally should be camelcase?)\nconst fields = \&q;name,coords,author{name{first}}\&q;;\nconst responseFormat: ResponseFormat = {\n    fields: {\n        author: {\n            fields: {\n                name: {\n                    fields: {\n                        first: {\n                            type: \&q;string\&q;,\n                        },\n                        last: {\n                            type: \&q;string\&q;,\n                        },\n                    },\n                    type: \&q;object\&q;,\n                },\n            },\n            type: \&q;object\&q;,\n        },\n        coords: {\n            items: {\n                items: {\n                    type: \&q;number\&q;,\n                },\n                type: \&q;array\&q;,\n            },\n            type: \&q;array\&q;,\n        },\n        license: {\n            type: \&q;string\&q;,\n        },\n        name: {\n            type: \&q;string\&q;,\n        },\n    },\n    type: \&q;object\&q;,\n};\n\n// you can use this fieldsToParse to track the fields usage\nconst fieldsToParse = pr.parseFields(fields, responseFormat);\nconsole.log(fieldsToParse);\n\n// and then you perform some logic and got the result\nconst result = {\n    author: {\n        name: {\n            first: \&q;Liam\&q;,\n            last: \&q;Ng\&q;,\n        },\n        url: \&q;https://www.leliam.com\&q;,\n    },\n    coords: [[13.37, 1.337], [0, 0]],\n    license: \&q;MIT\&q;,\n    name: \&q;partial-responsify\&q;,\n};\nconst res = pr.parseResult&l;any&g;(fieldsToParse, responseFormat, result);\nconsole.log(res);\n/*\nthe result should be:\n[ [ [], &s;name&s; ],\n  [ [], &s;coords&s; ],\n  [ [ &s;author&s;, &s;name&s; ], &s;first&s; ] ]\n{ author: { name: { first: &s;Liam&s; } },\n  coords: [ [ 13.37, 1.337 ], [ 0, 0 ] ],\n  name: &s;partial-responsify&s; }\n*/\n~~~\n\nSince we use `responseFormat` to validate the response, it will be great if there is a function to generate swagger response schema based on it!\n~~~js\nimport { ResponseFormat, SchemaGenerator } from \&q;partial-responsify\&q;;\nconst sgen = new SchemaGenerator();\nconst responseFormat: ResponseFormat = {\n    items: {\n        fields: {\n            a: {\n                type: \&q;number\&q;,\n            },\n            b: {\n                type: \&q;string\&q;,\n            },\n            c: {\n                type: \&q;integer\&q;,\n            },\n            d: {\n                format: \&q;uuid\&q;,\n                type: \&q;string\&q;,\n            },\n            e: {\n                fields: {\n                    a: {\n                        type: \&q;number\&q;,\n                    },\n                },\n                type: \&q;object\&q;,\n            },\n        },\n        type: \&q;object\&q;,\n    },\n    type: \&q;array\&q;,\n};\nconst result = sgen.generate(responseFormat);\nconsole.log(result);\n/*\n{\n    items: {\n        properties: {\n            a: {\n                type: \&q;number\&q;,\n            },\n            b: {\n                type: \&q;string\&q;,\n            },\n            c: {\n                type: \&q;integer\&q;,\n            },\n            d: {\n                format: \&q;uuid\&q;,\n                type: \&q;string\&q;,\n            },\n            e: {\n                properties: {\n                    a: {\n                        type: \&q;number\&q;,\n                    },\n                },\n                type: \&q;object\&q;,\n            },\n        },\n        type: \&q;object\&q;,\n    },\n    type: \&q;array\&q;,\n}\n*/\n~~~\n\n## To make it better\nIt will require a library to auto generate Swagger JSON file to make it shine. It is not hard to make the library however will be large amount of works to support every edge case.&q;,&q;id&q;:&q;1c62698f-da2a-4c6c-8c8f-fc555cdfbee9&q;,&q;bannerUrl&q;:&q;/assets/2018103000.png&q;,&q;coverUrl&q;:&q;/assets/2018103000.png&q;,&q;postedAt&q;:&q;2018-10-30T12:00:00.000Z&q;,&q;tags&q;:[&q;nodejs&q;,&q;opensource&q;,&q;typescript&q;],&q;title&q;:&q;Make REST api to partial response, just like GraphQL&q;,&q;typeCode&q;:1,&q;slug&q;:&q;make-rest-api-to-partial-response-just-like-graphql-@bRyL6nWufIxFXIdNWRdAwN&q;},&q;blogpost-blogHtml&q;:&q;&l;p&g;The story begins in one day, I want to make NodeJS API endpoints like&l;/p&g;\n&l;p&g;&l;code&g;GET /api/blogposts?fields=author{name,avatar},title,detail&l;/code&g;&l;/p&g;\n&l;p&g;and it should return me&l;/p&g;\n&l;pre class=\&q;hljs\&q;&g;&l;code&g;[{\n    &l;span class=\&q;hljs-string\&q;&g;\&q;author\&q;&l;/span&g;: {\n        &l;span class=\&q;hljs-string\&q;&g;\&q;name\&q;&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;Liam Ng\&q;&l;/span&g;,\n        &l;span class=\&q;hljs-string\&q;&g;\&q;avatar\&q;&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;https://someurl\&q;&l;/span&g;,\n    },\n    &l;span class=\&q;hljs-string\&q;&g;\&q;title\&q;&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;blogpost title\&q;&l;/span&g;,\n    &l;span class=\&q;hljs-string\&q;&g;\&q;detail\&q;&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;blogpost detail\&q;&l;/span&g;\n}]\n&l;/code&g;&l;/pre&g;\n&l;p&g;When using GraphQL, partial response is a build in tool. However sometimes REST is a more suitable use case.&l;/p&g;\n&l;p&g;Searching the web, I do find some libraries that do similar things however the feature is somewhat limited. Developers should not be in situation that&l;/p&g;\n&l;ol&g;\n&l;li&g;want to implement partial response&l;/li&g;\n&l;li&g;not so supported in REST&l;/li&g;\n&l;li&g;use GraphQL&l;/li&g;\n&l;/ol&g;\n&l;p&g;Instead, REST should be able to achieve it as easily, with a library.&l;/p&g;\n&l;h2&g;Things to acknowledge&l;/h2&g;\n&l;ul&g;\n&l;li&g;Graphql still provide you a better way to do concurrent GET request (though the code might get complicated on retry on partial error)&l;/li&g;\n&l;li&g;It should be build with somethings like swagger to let user knows available fields (it do comes with handy function to return response schema in OpenAPI 3 format)&l;/li&g;\n&l;/ul&g;\n&l;h2&g;Introduce partial-responsify&l;/h2&g;\n&l;p&g;tl;dr: you can find the code at &l;a href=\&q;https://github.com/nghenglim/partial-responsify%60\&q;&g;github&l;/a&g;&l;/p&g;\n&l;p&g;Using it should be simple&l;/p&g;\n&l;pre class=\&q;hljs\&q;&g;&l;code&g;&l;span class=\&q;hljs-keyword\&q;&g;import&l;/span&g; { PartialResponsify, ResponseFormat } &l;span class=\&q;hljs-keyword\&q;&g;from&l;/span&g; &l;span class=\&q;hljs-string\&q;&g;\&q;partial-responsify\&q;&l;/span&g;;\n\n&l;span class=\&q;hljs-comment\&q;&g;// ideally should be inside DI&l;/span&g;\n&l;span class=\&q;hljs-keyword\&q;&g;const&l;/span&g; pr = &l;span class=\&q;hljs-keyword\&q;&g;new&l;/span&g; PartialResponsify();\n\n&l;span class=\&q;hljs-comment\&q;&g;// it is normally inside ctx.query for Koa&l;/span&g;\n&l;span class=\&q;hljs-comment\&q;&g;// default don&s;t support whitespace or - or _&l;/span&g;\n&l;span class=\&q;hljs-comment\&q;&g;// (normally should be camelcase?)&l;/span&g;\n&l;span class=\&q;hljs-keyword\&q;&g;const&l;/span&g; fields = &l;span class=\&q;hljs-string\&q;&g;\&q;name,coords,author{name{first}}\&q;&l;/span&g;;\n&l;span class=\&q;hljs-keyword\&q;&g;const&l;/span&g; responseFormat: ResponseFormat = {\n    &l;span class=\&q;hljs-attr\&q;&g;fields&l;/span&g;: {\n        &l;span class=\&q;hljs-attr\&q;&g;author&l;/span&g;: {\n            &l;span class=\&q;hljs-attr\&q;&g;fields&l;/span&g;: {\n                &l;span class=\&q;hljs-attr\&q;&g;name&l;/span&g;: {\n                    &l;span class=\&q;hljs-attr\&q;&g;fields&l;/span&g;: {\n                        &l;span class=\&q;hljs-attr\&q;&g;first&l;/span&g;: {\n                            &l;span class=\&q;hljs-attr\&q;&g;type&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;string\&q;&l;/span&g;,\n                        },\n                        &l;span class=\&q;hljs-attr\&q;&g;last&l;/span&g;: {\n                            &l;span class=\&q;hljs-attr\&q;&g;type&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;string\&q;&l;/span&g;,\n                        },\n                    },\n                    &l;span class=\&q;hljs-attr\&q;&g;type&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;object\&q;&l;/span&g;,\n                },\n            },\n            &l;span class=\&q;hljs-attr\&q;&g;type&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;object\&q;&l;/span&g;,\n        },\n        &l;span class=\&q;hljs-attr\&q;&g;coords&l;/span&g;: {\n            &l;span class=\&q;hljs-attr\&q;&g;items&l;/span&g;: {\n                &l;span class=\&q;hljs-attr\&q;&g;items&l;/span&g;: {\n                    &l;span class=\&q;hljs-attr\&q;&g;type&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;number\&q;&l;/span&g;,\n                },\n                &l;span class=\&q;hljs-attr\&q;&g;type&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;array\&q;&l;/span&g;,\n            },\n            &l;span class=\&q;hljs-attr\&q;&g;type&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;array\&q;&l;/span&g;,\n        },\n        &l;span class=\&q;hljs-attr\&q;&g;license&l;/span&g;: {\n            &l;span class=\&q;hljs-attr\&q;&g;type&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;string\&q;&l;/span&g;,\n        },\n        &l;span class=\&q;hljs-attr\&q;&g;name&l;/span&g;: {\n            &l;span class=\&q;hljs-attr\&q;&g;type&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;string\&q;&l;/span&g;,\n        },\n    },\n    &l;span class=\&q;hljs-attr\&q;&g;type&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;object\&q;&l;/span&g;,\n};\n\n&l;span class=\&q;hljs-comment\&q;&g;// you can use this fieldsToParse to track the fields usage&l;/span&g;\n&l;span class=\&q;hljs-keyword\&q;&g;const&l;/span&g; fieldsToParse = pr.parseFields(fields, responseFormat);\n&l;span class=\&q;hljs-built_in\&q;&g;console&l;/span&g;.log(fieldsToParse);\n\n&l;span class=\&q;hljs-comment\&q;&g;// and then you perform some logic and got the result&l;/span&g;\n&l;span class=\&q;hljs-keyword\&q;&g;const&l;/span&g; result = {\n    &l;span class=\&q;hljs-attr\&q;&g;author&l;/span&g;: {\n        &l;span class=\&q;hljs-attr\&q;&g;name&l;/span&g;: {\n            &l;span class=\&q;hljs-attr\&q;&g;first&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;Liam\&q;&l;/span&g;,\n            &l;span class=\&q;hljs-attr\&q;&g;last&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;Ng\&q;&l;/span&g;,\n        },\n        &l;span class=\&q;hljs-attr\&q;&g;url&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;https://www.leliam.com\&q;&l;/span&g;,\n    },\n    &l;span class=\&q;hljs-attr\&q;&g;coords&l;/span&g;: [[&l;span class=\&q;hljs-number\&q;&g;13.37&l;/span&g;, &l;span class=\&q;hljs-number\&q;&g;1.337&l;/span&g;], [&l;span class=\&q;hljs-number\&q;&g;0&l;/span&g;, &l;span class=\&q;hljs-number\&q;&g;0&l;/span&g;]],\n    &l;span class=\&q;hljs-attr\&q;&g;license&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;MIT\&q;&l;/span&g;,\n    &l;span class=\&q;hljs-attr\&q;&g;name&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;partial-responsify\&q;&l;/span&g;,\n};\n&l;span class=\&q;hljs-keyword\&q;&g;const&l;/span&g; res = pr.parseResult&a;lt;any&a;gt;(fieldsToParse, responseFormat, result);\n&l;span class=\&q;hljs-built_in\&q;&g;console&l;/span&g;.log(res);\n&l;span class=\&q;hljs-comment\&q;&g;/*\nthe result should be:\n[ [ [], &s;name&s; ],\n  [ [], &s;coords&s; ],\n  [ [ &s;author&s;, &s;name&s; ], &s;first&s; ] ]\n{ author: { name: { first: &s;Liam&s; } },\n  coords: [ [ 13.37, 1.337 ], [ 0, 0 ] ],\n  name: &s;partial-responsify&s; }\n*/&l;/span&g;\n&l;/code&g;&l;/pre&g;\n&l;p&g;Since we use &l;code&g;responseFormat&l;/code&g; to validate the response, it will be great if there is a function to generate swagger response schema based on it!&l;/p&g;\n&l;pre class=\&q;hljs\&q;&g;&l;code&g;&l;span class=\&q;hljs-keyword\&q;&g;import&l;/span&g; { ResponseFormat, SchemaGenerator } &l;span class=\&q;hljs-keyword\&q;&g;from&l;/span&g; &l;span class=\&q;hljs-string\&q;&g;\&q;partial-responsify\&q;&l;/span&g;;\n&l;span class=\&q;hljs-keyword\&q;&g;const&l;/span&g; sgen = &l;span class=\&q;hljs-keyword\&q;&g;new&l;/span&g; SchemaGenerator();\n&l;span class=\&q;hljs-keyword\&q;&g;const&l;/span&g; responseFormat: ResponseFormat = {\n    &l;span class=\&q;hljs-attr\&q;&g;items&l;/span&g;: {\n        &l;span class=\&q;hljs-attr\&q;&g;fields&l;/span&g;: {\n            &l;span class=\&q;hljs-attr\&q;&g;a&l;/span&g;: {\n                &l;span class=\&q;hljs-attr\&q;&g;type&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;number\&q;&l;/span&g;,\n            },\n            &l;span class=\&q;hljs-attr\&q;&g;b&l;/span&g;: {\n                &l;span class=\&q;hljs-attr\&q;&g;type&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;string\&q;&l;/span&g;,\n            },\n            &l;span class=\&q;hljs-attr\&q;&g;c&l;/span&g;: {\n                &l;span class=\&q;hljs-attr\&q;&g;type&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;integer\&q;&l;/span&g;,\n            },\n            &l;span class=\&q;hljs-attr\&q;&g;d&l;/span&g;: {\n                &l;span class=\&q;hljs-attr\&q;&g;format&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;uuid\&q;&l;/span&g;,\n                &l;span class=\&q;hljs-attr\&q;&g;type&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;string\&q;&l;/span&g;,\n            },\n            &l;span class=\&q;hljs-attr\&q;&g;e&l;/span&g;: {\n                &l;span class=\&q;hljs-attr\&q;&g;fields&l;/span&g;: {\n                    &l;span class=\&q;hljs-attr\&q;&g;a&l;/span&g;: {\n                        &l;span class=\&q;hljs-attr\&q;&g;type&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;number\&q;&l;/span&g;,\n                    },\n                },\n                &l;span class=\&q;hljs-attr\&q;&g;type&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;object\&q;&l;/span&g;,\n            },\n        },\n        &l;span class=\&q;hljs-attr\&q;&g;type&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;object\&q;&l;/span&g;,\n    },\n    &l;span class=\&q;hljs-attr\&q;&g;type&l;/span&g;: &l;span class=\&q;hljs-string\&q;&g;\&q;array\&q;&l;/span&g;,\n};\n&l;span class=\&q;hljs-keyword\&q;&g;const&l;/span&g; result = sgen.generate(responseFormat);\n&l;span class=\&q;hljs-built_in\&q;&g;console&l;/span&g;.log(result);\n&l;span class=\&q;hljs-comment\&q;&g;/*\n{\n    items: {\n        properties: {\n            a: {\n                type: \&q;number\&q;,\n            },\n            b: {\n                type: \&q;string\&q;,\n            },\n            c: {\n                type: \&q;integer\&q;,\n            },\n            d: {\n                format: \&q;uuid\&q;,\n                type: \&q;string\&q;,\n            },\n            e: {\n                properties: {\n                    a: {\n                        type: \&q;number\&q;,\n                    },\n                },\n                type: \&q;object\&q;,\n            },\n        },\n        type: \&q;object\&q;,\n    },\n    type: \&q;array\&q;,\n}\n*/&l;/span&g;\n&l;/code&g;&l;/pre&g;\n&l;h2&g;To make it better&l;/h2&g;\n&l;p&g;It will require a library to auto generate Swagger JSON file to make it shine. It is not hard to make the library however will be large amount of works to support every edge case.&l;/p&g;\n&q;,&q;blogpost-showType&q;:3,&q;blogpost-errorMessage&q;:&q;&q;,&q;blogpost-postslug&q;:&q;make-rest-api-to-partial-response-just-like-graphql-@bRyL6nWufIxFXIdNWRdAwN&q;,&q;blogpost-shortener&q;:&q;RyL6nWufIxFXIdNWRdAwN&q;}</script></body></html>
