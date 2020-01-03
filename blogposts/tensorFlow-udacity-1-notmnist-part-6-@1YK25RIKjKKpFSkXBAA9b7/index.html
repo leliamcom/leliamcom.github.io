@@ -24,7 +24,6 @@ print(y_pred[<span class=hljs-number>10001</span>:<span class=hljs-number>20000<
 	}
 	if (document.title === "Not Found") {
 		let paths = trim(window.location.pathname, "/").split("-@");
-		console.log(paths);
 		if (paths.length > 1) {
 			fetch(`/blogposts/shortener-${paths[paths.length - 1]}.json`)
 			.then((data) => {

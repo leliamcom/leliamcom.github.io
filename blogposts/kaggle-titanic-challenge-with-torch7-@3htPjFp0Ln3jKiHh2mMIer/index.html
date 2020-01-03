@@ -6,7 +6,6 @@ torch7 to compete in this competition. FYI, click here to get the data.
 	}
 	if (document.title === "Not Found") {
 		let paths = trim(window.location.pathname, "/").split("-@");
-		console.log(paths);
 		if (paths.length > 1) {
 			fetch(`/blogposts/shortener-${paths[paths.length - 1]}.json`)
 			.then((data) => {

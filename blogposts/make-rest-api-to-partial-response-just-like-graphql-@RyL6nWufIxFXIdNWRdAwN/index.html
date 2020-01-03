@@ -160,7 +160,6 @@ the result should be:
 	}
 	if (document.title === "Not Found") {
 		let paths = trim(window.location.pathname, "/").split("-@");
-		console.log(paths);
 		if (paths.length > 1) {
 			fetch(`/blogposts/shortener-${paths[paths.length - 1]}.json`)
 			.then((data) => {

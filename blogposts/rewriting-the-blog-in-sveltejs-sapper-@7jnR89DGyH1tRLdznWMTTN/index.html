@@ -8,7 +8,6 @@ To solve this, I will have to rewrite it in SvelteJS, which shift a lot of work 
 	}
 	if (document.title === "Not Found") {
 		let paths = trim(window.location.pathname, "/").split("-@");
-		console.log(paths);
 		if (paths.length > 1) {
 			fetch(`/blogposts/shortener-${paths[paths.length - 1]}.json`)
 			.then((data) => {

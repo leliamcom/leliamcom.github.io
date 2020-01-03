@@ -7,7 +7,6 @@ sudo docker run -d -v <span class=hljs-string>"<span class=hljs-variable>$PWD</s
 	}
 	if (document.title === "Not Found") {
 		let paths = trim(window.location.pathname, "/").split("-@");
-		console.log(paths);
 		if (paths.length > 1) {
 			fetch(`/blogposts/shortener-${paths[paths.length - 1]}.json`)
 			.then((data) => {
